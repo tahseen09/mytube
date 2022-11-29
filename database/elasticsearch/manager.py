@@ -14,10 +14,6 @@ class ElasticsearchDB:
         self.index = index or self.index
         self.db = Elasticsearch([self.url])
 
-    def bulk_insert(self, documents: list):
-        commands = [{"create": document} for document in documents]
-        return self.db.bulk(index=self.index, operations=commands)
-
     def insert(self, document: dict):
         return self.db.create(index=self.index, id=str(uuid4()), body=document)
 

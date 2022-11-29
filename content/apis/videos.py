@@ -10,6 +10,32 @@ class VideosAPI(View):
     default_page_size = 10
 
     def get(self, request):
+        """
+        Gets the videos whose title or description matches the search query.
+
+        Request URL Example - localhost:8000/content/videos?q=lost charles
+
+        Response Example -
+        {
+            "result": {
+                "page": {
+                    "current": 1,
+                    "has_next": false,
+                    "has_previous": false,
+                    "next": null,
+                    "previous": null
+                },
+                "data": [
+                    {
+                        "title": "Charles Gets Lost in the Smoke! 💨 #Shorts",
+                        "description": "Ferrari's Charles Leclerc indulged in some post-race donuts in Abu Dhabi... but the smoke was so thick, he couldn't find where to ...",
+                        "source": "youtube",
+                        "published_at": null
+                    }
+                ]
+            }
+        }
+        """
         query = request.GET.get("q")
         page_number = int(request.GET.get("page", 1))
         if not query:
@@ -21,7 +47,7 @@ class VideosAPI(View):
         objects_ids = [result["_source"]["id"] for result in hits]
         videos = (
             Video.objects.filter(id__in=objects_ids)
-            .order_by("-created_at")
+            .order_by("-published_at")
             .values("title", "description", "source", "published_at")
         )
 

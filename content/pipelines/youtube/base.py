@@ -46,7 +46,7 @@ class BaseYoutubeData:
             timeout=EXTERNAL_REQUESTS_TIMEOUT_IN_SECONDS,
         )
         if not response.ok:
-            print("No items found", response.text)
+            print("No items found", response.status_code, response.text)
             return items
         response = response.json()
         items.extend(response["items"])
@@ -60,6 +60,7 @@ class BaseYoutubeData:
             )
             if not response.ok:
                 # ! Some Error Occurred
+                print("No items found", response.status_code, response.text)
                 break
             response = response.json()
             items.extend(response["items"])
@@ -94,6 +95,7 @@ class BaseYoutubeData:
                 "description": video.description,
             }
             documents.append(document)
+            # TODO - Move to bulk inserts in Elasticsearch
             ContentES().insert(document)
         return documents
 
@@ -117,8 +119,7 @@ class BaseYoutubeData:
             )
             queries.append(video_obj)
 
-        videos = Video.objects.bulk_create(queries)
-        return videos
+        return Video.objects.bulk_create(queries)
 
     @classmethod
     def load(cls) -> None:
