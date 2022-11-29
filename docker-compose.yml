@@ -21,11 +21,12 @@ services:
       - redis
   celery:
     build: .
-    command: celery -A proj worker -l info
+    command: celery -A mytube worker -l info
     volumes:
       - .:/mytube
     depends_on:
       - redis
+      - es
   celery-beat:
     build: .
     command: celery -A mytube beat -l info
@@ -33,3 +34,4 @@ services:
       - .:/mytube
     depends_on:
       - redis
+      - es
