@@ -19,3 +19,4 @@
 #### Improvements (ToDo)
 1. An env file should be used for values such as API KEY.
 2. Rotation of API Keys could be achieved using Redis and setting the new value of API Key could happen when the current one reaches it's quota.
+3. Being an F1 fan, I have chosen motorsports as a topic, feel free to change the topic_id in `content/pipelines/youtube/motorsport.py`
