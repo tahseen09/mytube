@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  es:
+    image: elasticsearch:7.8.1
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+  redis:
+    image: "redis:alpine"
+  web:
+    build: .
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/mytube
+    ports:
+      - 8000:8000
+    depends_on:
+      - es
+      - redis
+  celery:
+    build: .
+    command: celery -A proj worker -l info
+    volumes:
+      - .:/mytube
+    depends_on:
+      - redis
+  celery-beat:
+    build: .
+    command: celery -A mytube beat -l info
+    volumes:
+      - .:/mytube
+    depends_on:
+      - redis
